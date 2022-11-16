@@ -1,23 +1,26 @@
 #include "Kassoviy_Apparat.h"
 #include <iostream>
 
+
 int apple = 5, potato = 4, lemon = 26, melon = 14, garlic = 11, tomato = 20;
 
 string ap[10] = { "Apple" }; string po[10] = { "Potato" }; string le[10] = { "Lemon" };
 string me[10] = {"Melon"}; string ga[10] = {"Garlic"}; string to[10] = {"Tomato"};
 
-string** arr = new string* [6];
-int* arrKol = new int[6];
+const int kol_tov = 6;//количество товаров в меню
 
-int appleCen = 20; int potatoCen = 20; int lemonCen = 20; int melonCen = 20; int garlicCen = 20; int tomatoCen = 20;
+string** arr = new string* [kol_tov];
+int* arrKol = new int[kol_tov];
 
-int* arrCen = new int[6];
+int appleCen = 20; int potatoCen = 20; int lemonCen = 20; int melonCen = 20; int garlicCen = 20; int tomatoCen = 20;//цены
 
-char* checkPeolpe = new char;
+int* arrCen = new int[kol_tov];//цены
+
+char* checkPeolpe = new char;//чек чела
 
 int temp=-1;
 
-int sumBuy = 0;
+int sumBuy = 0;//сумма в чеке
 
 void Kassoviy_Apparat::tovari() {
 	arr[0] = ap;
@@ -41,34 +44,44 @@ void Kassoviy_Apparat::tovari() {
 	arrCen[4] = garlicCen;
 	arrCen[5] = tomatoCen;
 
-	for (int i = 0; i < 6; i++) {
-		if (i == 0)cout << "-----------Spisok--------- "<<endl;
+	for (int i = 0; i < kol_tov; i++) {
+		if (i == 0)cout << "-----------Spisok--------"<<endl;
 		cout << *arr[i] << " " << arrKol[i]<<" " << arrCen[i] << '$' << endl;
-		if (i == 5)cout << "------------------------";
+		if (i == kol_tov-1)cout << "-------------------------";
 	}
 }
 
 void Kassoviy_Apparat::buy_tovar() {
 	string wantBuy;
+	string otvet;
 	int wantBuyKol;
+	cout << endl<<"if you want to pay, write 'oplata', else write item from the list"<<endl;
+	cin >> otvet;
 	
-	cout <<endl<< "Chto vi hotite buy? "; cin >> wantBuy;
+	while (otvet != "oplata") {
+		wantBuy = otvet;
 
-	for (int i = 0; i < 6; i++)
-		if (wantBuy == *arr[i]) {
-			temp = i;
-			break;
+		for (int i = 0; i < kol_tov; i++)
+			if (wantBuy == *arr[i]) {
+				temp = i;
+				break;
+			}
+		if (temp==-1)cout << "net takogo"<<endl;
+		cout << "temp " << temp<<endl;
+		if (temp != -1 && temp<kol_tov) {
+			cout << "Kakoe kol-vo hotite? "<<endl; cin >> wantBuyKol;
+			if (arrKol[temp] < wantBuyKol) cout << "Y nas net takogo kol-va"<<endl;
+			else {
+				arrKol[temp]= arrKol[temp] - wantBuyKol;///////////////////////////////////////////////////////////////////
+				sumBuy += arrCen[temp] * wantBuyKol;
+				system("cls");
+				tovari();
+				cout << "dobavleno"<<endl<<endl;
+				cout << "hotite li eshe dobavit' tovar or go to pay?(tovar | oplata)"<<endl; cin >> otvet;
+				temp = -1;
+				cout << "sumbuy"<<sumBuy << endl;
+			}
 		}
-
-	if (temp)cout << "net takogo";
-
-	cout << temp;
-
-	if(temp!=-1) {
-		cout << "Kakoe kol-vo hotite? "; cin >> wantBuyKol;
-		if (arrKol[temp] < wantBuyKol) cout << "Y nas net takogo kol-va";
-		else cout << "dobavleno";
-							
 	}
 }
 
